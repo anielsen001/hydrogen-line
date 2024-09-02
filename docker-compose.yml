@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  arm32v7:
+    init: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DISPLAY
+    image: arm32v7/gnuradio3.8/limesdr:latest
+    volumes:
+      # passing through this file allows opening windows from the container in your host computer
+      - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+      - "$HOME/.Xauthority:/home/gnuradio/.Xauthority:rw"
+      # Added to mount the USB FTDI device to the container so we can plug in while running
+      - "/dev/bus/usb/:/dev/bus/usb/"
+      - "/data:/data"
+    network_mode: "host"
+    privileged: true
+    ports:
+      - "6000-6063:6000-6063"
+    command: 
+      - /bin/bash
+
+  arm64v8:
+    init: true
+    build:
+      context: .
+      dockerfile: Dockerfile-arm64v8
+    environment:
+      - DISPLAY
+    image: arm64v8/gnuradio3.8/limesdr:latest
+    volumes:
+      # passing through this file allows opening windows from the container in your host computer
+      - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+      - "$HOME/.Xauthority:/home/gnuradio/.Xauthority:rw"
+      # Added to mount the USB FTDI device to the container so we can plug in while running
+      - "/dev/bus/usb/:/dev/bus/usb/"
+      - "/data:/data"
+      - "$PWD:/opt/project"
+    network_mode: "host"
+    privileged: true
+    ports:
+      - "6000-6063:6000-6063"
+    command: 
+      - /bin/bash
